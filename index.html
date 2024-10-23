@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cubic Equation Graph Plotter</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: 100px;
+            padding: 5px;
+            margin: 5px;
+        }
+        input[type="button"] {
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        canvas {
+            width: 100%;
+            height: 600px; /* Increased the height */
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Cubic Equation Graph Plotter</h1>
+
+    <form id="dataForm">
+        <label for="a">Enter coefficient a (ax³):</label>
+        <input type="number" id="a" placeholder="e.g. 1" required>
+        <br>
+        <label for="b">Enter coefficient b (bx²):</label>
+        <input type="number" id="b" placeholder="e.g. 2" required>
+        <br>
+        <label for="c">Enter coefficient c (cx):</label>
+        <input type="number" id="c" placeholder="e.g. 1" required>
+        <br>
+        <label for="d">Enter constant d:</label>
+        <input type="number" id="d" placeholder="e.g. 1" required>
+        <br><br>
+        <input type="button" value="Plot Graph" onclick="plotGraph()">
+    </form>
+
+    <canvas id="graphCanvas"></canvas>
+</div>
+
+<script>
+    function plotGraph() {
+        // Get the input values for a, b, c, and d
+        const a = parseFloat(document.getElementById('a').value);
+        const b = parseFloat(document.getElementById('b').value);
+        const c = parseFloat(document.getElementById('c').value);
+        const d = parseFloat(document.getElementById('d').value);
+
+        // Validate input values
+        if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(d)) {
+            alert('Please enter valid numbers for a, b, c, and d.');
+            return;
+        }
+
+        // Generate x and y values for the cubic equation
+        const xValues = [];
+        const yValues = [];
+
+        // Generate x-values from -10 to 10 (you can adjust the range)
+        for (let x = -10; x <= 10; x += 0.1) {
+            xValues.push(x);
+            // Calculate the corresponding y-value using y = ax³ + bx² + cx + d
+            const y = a * Math.pow(x, 3) + b * Math.pow(x, 2) + c * x + d;
+            yValues.push(y);
+        }
+
+        // Get the canvas element for the graph
+        const ctx = document.getElementById('graphCanvas').getContext('2d');
+
+        // Create or update the graph
+        if (window.myChart) {
+            window.myChart.destroy();  // Destroy previous chart before rendering a new one
+        }
+
+        window.myChart = new Chart(ctx, {
+            type: 'line',  // Chart type (line graph)
+            data: {
+                labels: xValues,  // x-axis labels (x-values)
+                datasets: [{
+                    label: `y = ${a}x³ + ${b}x² + ${c}x + ${d}`,  // Equation label
+                    data: yValues,  // y-axis values (calculated y-values)
+                    borderColor: 'rgba(75, 192, 192, 1)',  // Line color
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',  // Area color (under the line)
+                    fill: true,  // Fill under the curve
+                }]
+            },
+            options: {
+                responsive: true,  // Make the chart responsive
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'x'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'y'
+                        },
+                        beginAtZero: false  // Let the y-axis start at the minimum y-value
+                    }
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
